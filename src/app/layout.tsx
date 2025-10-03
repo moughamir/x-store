@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { getRuntimeConfig, getPublicConfig } from "../utils/getEnvVars";
+import type { Viewport } from "next";
+import ShopFooter from "@/components/layout/ShopFooter";
+import ShopHeader from "@/components/layout/ShopHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +27,12 @@ const SITE_URL =
   "https://example.com";
 const METADATA_BASE = new URL(SITE_URL);
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
+  ],
+};
 export const metadata: Metadata = {
   title: {
     default: `${publicConfig.appName} — Multi-vendor Store`,
@@ -47,10 +56,7 @@ export const metadata: Metadata = {
   ],
   creator: "X Market Team",
   publisher: "X Market",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
-  ],
+
   openGraph: {
     title: "X Market — Multi-vendor Marketplace",
     description:
@@ -112,7 +118,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex min-h-screen flex-col">
+          <ShopHeader />
+          <main className="flex-grow">{children}</main>
+          <ShopFooter />
+        </div>
       </body>
     </html>
   );

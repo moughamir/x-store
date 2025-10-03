@@ -1,16 +1,16 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export const metadata = {
-  title: 'My Account | X-Store',
-  description: 'Manage your account settings',
+  title: "My Account | X-Store",
+  description: "Manage your account settings",
 };
 
 export default function AccountPage() {
   // This would typically fetch from an API with authentication
   const user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    joinDate: 'May 2023',
+    name: "John Doe",
+    email: "john.doe@example.com",
+    joinDate: "May 2023",
   };
 
   return (
@@ -62,9 +62,7 @@ export default function AccountPage() {
               </div>
 
               <div className="mt-6">
-                <button
-                  className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors"
-                >
+                <button className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors">
                   Edit Profile
                 </button>
               </div>
@@ -75,9 +73,7 @@ export default function AccountPage() {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold">Address Book</h2>
-              <button
-                className="text-sm text-indigo-600 hover:text-indigo-900"
-              >
+              <button className="text-sm text-indigo-600 hover:text-indigo-900">
                 Add New Address
               </button>
             </div>
@@ -104,9 +100,7 @@ export default function AccountPage() {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-lg font-semibold">Payment Methods</h2>
-              <button
-                className="text-sm text-indigo-600 hover:text-indigo-900"
-              >
+              <button className="text-sm text-indigo-600 hover:text-indigo-900">
                 Add Payment Method
               </button>
             </div>
@@ -149,14 +143,12 @@ export default function AccountPage() {
                   Wishlist
                 </Link>
                 <Link
-                  href="/account/security"
+                  href={"/account/security"}
                   className="block px-3 py-2 rounded-md hover:bg-gray-100 transition-colors"
                 >
                   Security Settings
                 </Link>
-                <button
-                  className="block w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-red-600"
-                >
+                <button className="block w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-red-600">
                   Sign Out
                 </button>
               </nav>
