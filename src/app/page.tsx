@@ -1,6 +1,13 @@
 import Image from "next/image";
+import { getPublicConfig, getRuntimeConfig } from "@/utils/getEnvVars";
 
 export default function Home() {
+  // Get public environment variables (available in browser)
+  const publicConfig = getPublicConfig();
+
+  // Get runtime configuration (server-side only variables will only be available during SSR)
+  const runtimeConfig = getRuntimeConfig();
+
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -12,6 +19,48 @@ export default function Home() {
           height={38}
           priority
         />
+
+        {/* Environment Variables Demo Section */}
+        <div className="w-full max-w-2xl p-6 bg-black/[.05] dark:bg-white/[.06] rounded-lg">
+          <h2 className="text-xl font-bold mb-4">Environment Variables Demo</h2>
+
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2">
+              Public Variables (Client & Server)
+            </h3>
+            <div className="grid grid-cols-1 gap-2">
+              <div className="flex">
+                <span className="font-mono bg-black/[.1] dark:bg-white/[.1] px-2 py-1 rounded mr-2">
+                  NEXT_PUBLIC_API_URL:
+                </span>
+                <span>{publicConfig.apiUrl}</span>
+              </div>
+              <div className="flex">
+                <span className="font-mono bg-black/[.1] dark:bg-white/[.1] px-2 py-1 rounded mr-2">
+                  NEXT_PUBLIC_ANALYTICS_ID:
+                </span>
+                <span>{publicConfig.analyticsId}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold mb-2">
+              Runtime Config (Server-Side Only)
+            </h3>
+            <div className="grid grid-cols-1 gap-2">
+              {Object.entries(runtimeConfig).map(([key, value]) => (
+                <div key={key} className="flex">
+                  <span className="font-mono bg-black/[.1] dark:bg-white/[.1] px-2 py-1 rounded mr-2">
+                    {key}:
+                  </span>
+                  <span>{value as string}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}
@@ -43,11 +92,11 @@ export default function Home() {
           </a>
           <a
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="/api/config"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Read our docs
+            View API Config
           </a>
         </div>
       </main>
