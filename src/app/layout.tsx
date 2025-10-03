@@ -5,6 +5,7 @@ import { getRuntimeConfig, getPublicConfig } from "../utils/getEnvVars";
 import type { Viewport } from "next";
 import ShopFooter from "@/components/layout/ShopFooter";
 import ShopHeader from "@/components/layout/ShopHeader";
+import { Head } from "next/document";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -115,6 +116,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link rel="prefetch" href="https://cdn.shopify.com" />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
