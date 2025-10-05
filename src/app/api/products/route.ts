@@ -1,51 +1,82 @@
-import { NextResponse } from 'next/server';
-import { getDatabaseConfig } from '@/utils/getEnvVars';
+import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_REVALIDATE_SECONDS } from "@/lib/api/productsApi";
+import {
+  serverListProducts,
+  serverSearchProducts,
+} from "@/lib/api/cosmos/cosmos-server";
 
-// GET /api/products
-export async function GET(request: Request) {
-  // This would typically fetch from a database
-  const dbConfig = getDatabaseConfig();
-  console.log('Using database config:', dbConfig);
+function normalizePositiveInteger(
+  rawValue: string | null,
+  fallback: number
+): number {
+  if (!rawValue) {
+    return fallback;
+  }
 
-  // Mock products data
-  const products = [
-    { id: 1, name: 'Product 1', price: 19.99, image: '/images/products/placeholder.jpg' },
-    { id: 2, name: 'Product 2', price: 29.99, image: '/images/products/placeholder.jpg' },
-    { id: 3, name: 'Product 3', price: 39.99, image: '/images/products/placeholder.jpg' },
-  ];
+  const parsed = Number.parseInt(rawValue, 10);
+  if (Number.isNaN(parsed) || parsed <= 0) {
+    return fallback;
+  }
 
-  return NextResponse.json({ products });
+  return parsed;
 }
 
-// POST /api/products
-export async function POST(request: Request) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const search = searchParams.get("search")?.trim() || undefined;
+  const fields = searchParams.get("fields") ?? undefined;
+  const limit = normalizePositiveInteger(searchParams.get("limit"), 20);
+  const page = normalizePositiveInteger(searchParams.get("page"), 1);
+
   try {
-    const body = await request.json();
+    const cosmosResponse = search
+      ? await serverSearchProducts(search, {
+          page,
+          limit,
+          fields,
+          revalidate: DEFAULT_REVALIDATE_SECONDS,
+        })
+      : await serverListProducts({
+          page,
+          limit,
+          fields,
+          revalidate: DEFAULT_REVALIDATE_SECONDS,
+        });
 
-    // Validate the request body
-    if (!body.name || !body.price) {
-      return NextResponse.json(
-        { error: 'Name and price are required' },
-        { status: 400 }
-      );
-    }
-
-    // This would typically save to a database
-    const newProduct = {
-      id: Date.now(),
-      name: body.name,
-      price: body.price,
-      image: body.image || '/images/products/placeholder.jpg',
-    };
-
-    return NextResponse.json(
-      { product: newProduct },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      products: cosmosResponse.products ?? [],
+      meta: cosmosResponse.meta ?? {
+        page,
+        limit,
+        total: cosmosResponse.products?.length ?? 0,
+      },
+    });
   } catch (error) {
+    console.error("Error in GET /api/products:", error);
+    const statusCandidate = (error as { status?: number }).status;
+    const status = typeof statusCandidate === "number" ? statusCandidate : 500;
+    const message =
+      error instanceof Error ? error.message : "Failed to fetch products";
+
     return NextResponse.json(
-      { error: 'Invalid request body' },
-      { status: 400 }
+      {
+        error: message,
+        products: [],
+        meta: {
+          page,
+          limit,
+          total: 0,
+          total_pages: 0,
+        },
+      },
+      { status }
     );
   }
+}
+
+export async function POST() {
+  return NextResponse.json(
+    { message: "Product creation not implemented" },
+    { status: 501 }
+  );
 }

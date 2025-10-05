@@ -11,7 +11,7 @@ export default function ShopHeader() {
           <Link href="/products" className="transition-colors hover:text-primary">
             Products
           </Link>
-          <Link href="/categories" className="transition-colors hover:text-primary">
+          <Link href={{ pathname: "/categories" }} className="transition-colors hover:text-primary">
             Categories
           </Link>
           <Link href="/cart" className="transition-colors hover:text-primary">

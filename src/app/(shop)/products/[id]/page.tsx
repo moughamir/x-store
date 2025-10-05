@@ -25,7 +25,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     name: `Product ${productId}`,
     price: 19.99 + productId,
     description: `This is the detailed description for Product ${productId}. It includes all the features and benefits of this amazing product.`,
-    image: '/images/products/placeholder.jpg',
+    image: "/images/products/placeholder.svg",
   };
 
   return (

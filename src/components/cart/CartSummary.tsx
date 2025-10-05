@@ -1,3 +1,5 @@
+"use client";
+
 export default function CartSummary() {
   // This would typically calculate totals from a cart state or context
   const subtotal = 69.97;
@@ -33,7 +35,7 @@ export default function CartSummary() {
         className="w-full bg-black text-white py-3 px-6 rounded-full hover:bg-gray-800 transition-colors mt-6"
         onClick={() => {
           // This would typically navigate to checkout
-          window.location.href = '/checkout';
+          window.location.href = "/checkout";
         }}
       >
         Proceed to Checkout

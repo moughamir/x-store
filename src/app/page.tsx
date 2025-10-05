@@ -13,19 +13,19 @@ async function getFeaturedProducts() {
       id: 1,
       name: "Product 1",
       price: 19.99,
-      image: "/images/products/placeholder.jpg",
+      image: "/images/products/placeholder.svg",
     },
     {
       id: 2,
       name: "Product 2",
       price: 29.99,
-      image: "/images/products/placeholder.jpg",
+      image: "/images/products/placeholder.svg",
     },
     {
       id: 3,
       name: "Product 3",
       price: 39.99,
-      image: "/images/products/placeholder.jpg",
+      image: "/images/products/placeholder.svg",
     },
   ];
 }
@@ -79,12 +79,11 @@ export default async function HomePage() {
             {["Electronics", "Clothing", "Home & Kitchen"].map((category) => (
               <Link
                 key={category}
-                href={
-                  `/category/${category
+                href={{
+                  pathname: `/category/${category
                     .toLowerCase()
-                    .replace(" & ", "-")}` as any
-                }
-              >
+                    .replace(" & ", "-")}`,
+                }}>
                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-40 bg-gray-200"></div>
                   <div className="p-4">

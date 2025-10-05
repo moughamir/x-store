@@ -10,7 +10,16 @@ interface ProductFormData {
   image: string;
 }
 
-export default function ProductForm({ product }: { product?: any }) {
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+  stock?: number;
+  image?: string;
+}
+
+export default function ProductForm({ product }: { product?: Product }) {
   const [formData, setFormData] = useState<ProductFormData>({
     name: product?.name || '',
     price: product?.price ? product.price.toString() : '',
@@ -44,14 +53,14 @@ export default function ProductForm({ product }: { product?: any }) {
       const response = await fetch(endpoint, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.name,
           price: parseFloat(formData.price),
           description: formData.description,
-          stock: parseInt(formData.stock || '0'),
-          image: formData.image || '/images/products/placeholder.jpg',
+          stock: parseInt(formData.stock || "0"),
+          image: formData.image || "/images/products/placeholder.svg",
         }),
       });
 
@@ -71,7 +80,10 @@ export default function ProductForm({ product }: { product?: any }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Product Name
         </label>
         <input
@@ -86,7 +98,10 @@ export default function ProductForm({ product }: { product?: any }) {
       </div>
 
       <div>
-        <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="price"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Price
         </label>
         <input
@@ -103,7 +118,10 @@ export default function ProductForm({ product }: { product?: any }) {
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Description
         </label>
         <textarea
@@ -117,7 +135,10 @@ export default function ProductForm({ product }: { product?: any }) {
       </div>
 
       <div>
-        <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="stock"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Stock Quantity
         </label>
         <input
@@ -132,7 +153,10 @@ export default function ProductForm({ product }: { product?: any }) {
       </div>
 
       <div>
-        <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="image"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Image URL
         </label>
         <input
@@ -141,7 +165,7 @@ export default function ProductForm({ product }: { product?: any }) {
           name="image"
           value={formData.image}
           onChange={handleChange}
-          placeholder="/images/products/placeholder.jpg"
+          placeholder="/images/products/placeholder.svg"
           className="w-full px-3 py-2 border border-gray-300 rounded-md"
         />
       </div>
@@ -149,7 +173,7 @@ export default function ProductForm({ product }: { product?: any }) {
       <div className="flex justify-end space-x-4">
         <button
           type="button"
-          onClick={() => window.location.href = '/admin/products'}
+          onClick={() => (window.location.href = "/admin/products")}
           className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
         >
           Cancel
@@ -158,7 +182,7 @@ export default function ProductForm({ product }: { product?: any }) {
           type="submit"
           className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
         >
-          {product ? 'Update Product' : 'Create Product'}
+          {product ? "Update Product" : "Create Product"}
         </button>
       </div>
     </form>
