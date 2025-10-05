@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface ProductCardProps {
+export interface ProductCardProps {
   product: {
     id: number | string;
     title: string;
@@ -14,7 +14,7 @@ interface ProductCardProps {
   };
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   const imageSrc = product.images?.[0]?.src;
 
   return (

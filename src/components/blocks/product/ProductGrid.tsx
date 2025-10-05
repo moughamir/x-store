@@ -1,11 +1,5 @@
-import ProductCard from './ProductCard';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import { Product } from "@/lib/api/cosmos/cosmos-types";
+import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
   products: Product[];
