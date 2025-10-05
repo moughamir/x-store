@@ -1,4 +1,5 @@
 import { createCosmosClient } from "@/lib/api/cosmos/cosmos-client";
+import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
 import { NextResponse } from "next/server";
 
 export async function GET(

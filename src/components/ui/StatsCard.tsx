@@ -1,3 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+
 export interface StatsCardProps {
   title: string;
   value: string;
@@ -12,39 +20,31 @@ export default function StatsCard({
   isNegative = false,
 }: StatsCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-      <p className="text-2xl font-semibold mt-2">{value}</p>
-
-      {change && (
-        <div className="flex items-center mt-2">
-          <span
-            className={`text-sm ${
-              isNegative ? "text-red-500" : "text-green-500"
-            }`}
-          >
-            {change}
-          </span>
-          <svg
-            className={`w-4 h-4 ml-1 ${
-              isNegative
-                ? "text-red-500 transform rotate-180"
-                : "text-green-500"
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 15l7-7 7 7"
-            />
-          </svg>
-        </div>
-      )}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-2xl font-semibold">{value}</p>
+        {change && (
+          <div className="flex items-center mt-2 text-xs text-muted-foreground">
+            {isNegative ? (
+              <ArrowDownIcon className="w-4 h-4 text-destructive" />
+            ) : (
+              <ArrowUpIcon className="w-4 h-4 text-green-500" />
+            )}
+            <span
+              className={`ml-1 font-medium ${
+                isNegative ? "text-destructive" : "text-green-500"
+              }`}>
+              {change}
+            </span>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
+

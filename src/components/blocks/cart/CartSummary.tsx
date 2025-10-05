@@ -1,5 +1,15 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
 export default function CartSummary() {
   // This would typically calculate totals from a cart state or context
   const subtotal = 69.97;
@@ -8,38 +18,43 @@ export default function CartSummary() {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-
-      <div className="space-y-3 border-b border-gray-200 pb-4 mb-4">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
+    <Card>
+      <CardHeader>
+        <CardTitle>Order Summary</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Subtotal</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Shipping</span>
+            <span>${shipping.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Tax</span>
+            <span>${tax.toFixed(2)}</span>
+          </div>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
+        <Separator />
+        <div className="flex justify-between font-semibold text-lg">
+          <span>Total</span>
+          <span>${total.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Tax</span>
-          <span>${tax.toFixed(2)}</span>
-        </div>
-      </div>
-
-      <div className="flex justify-between font-semibold text-lg">
-        <span>Total</span>
-        <span>${total.toFixed(2)}</span>
-      </div>
-
-      <button
-        className="w-full bg-black text-white py-3 px-6 rounded-full hover:bg-gray-800 transition-colors mt-6"
-        onClick={() => {
-          // This would typically navigate to checkout
-          window.location.href = "/checkout";
-        }}
-      >
-        Proceed to Checkout
-      </button>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <Button
+          size="lg"
+          className="w-full"
+          onClick={() => {
+            // This would typically navigate to checkout
+            window.location.href = "/checkout";
+          }}
+        >
+          Proceed to Checkout
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

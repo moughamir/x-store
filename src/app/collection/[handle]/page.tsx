@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductCard } from "@/components/blocks/product/ProductCard";
+import ProductCard from "@/components/blocks/product/ProductCard";
 import { Spinner } from "@/components/ui/spinner";
 import { PaginationControl } from "@/components/blocks/layout/PaginationControl";
 import { useSearchParams } from "next/navigation";

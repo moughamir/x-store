@@ -1,8 +1,7 @@
-import { Product } from "@/lib/api/cosmos/cosmos-types";
-import ProductCard from "./ProductCard";
+import ProductCard, { type ProductCardProps } from "./ProductCard";
 
 interface ProductGridProps {
-  products: Product[];
+  products: ProductCardProps["product"][];
 }
 
 export default function ProductGrid({ products }: ProductGridProps) {

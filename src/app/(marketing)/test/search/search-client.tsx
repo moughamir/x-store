@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ProductCard } from "@/components/blocks/product/ProductCard";
+import ProductCard from "@/components/blocks/product/ProductCard";
 import { PaginationControl } from "@/components/blocks/layout/PaginationControl";
 import { useSearchParams, useRouter } from "next/navigation";
-import type { Product, ProductSearchResponse } from "@/types/api";
+import type { Product, ProductList } from "@/lib/api/cosmos/cosmos-types";
 
 export default function SearchClient() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function SearchClient() {
         `/api/cosmos/search?q=${encodeURIComponent(q)}&limit=12&page=${page}`
       );
       if (!res.ok) throw new Error(`Search failed: ${res.status}`);
-      const data = (await res.json()) as ProductSearchResponse;
+      const data = (await res.json()) as ProductList;
       setResults(data.products ?? []);
       setMeta(data.meta ?? {});
     } catch (err: unknown) {

@@ -1,4 +1,8 @@
-import Image from 'next/image';
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { MinusIcon, PlusIcon, Trash2Icon } from "lucide-react";
 
 export default function CartItemList() {
   // This would typically fetch cart items from a state or context
@@ -24,37 +28,57 @@ export default function CartItemList() {
   if (cartItems.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Your cart is empty</p>
+        <p className="text-muted-foreground">Your cart is empty</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      {cartItems.map((item) => (
-        <div key={item.id} className="flex items-center border-b pb-4">
-          <div className="w-20 h-20 relative flex-shrink-0">
-            <Image
-              src={item.image}
-              alt={item.name}
-              width={80}
-              height={80}
-              className="object-cover rounded"
-            />
-          </div>
-          <div className="ml-4 flex-grow">
-            <h3 className="font-medium">{item.name}</h3>
-            <p className="text-gray-500">${item.price.toFixed(2)}</p>
-            <div className="flex items-center mt-2">
-              <button className="w-8 h-8 flex items-center justify-center border rounded">-</button>
-              <span className="mx-2">{item.quantity}</span>
-              <button className="w-8 h-8 flex items-center justify-center border rounded">+</button>
+      {cartItems.map((item, index) => (
+        <div key={item.id}>
+          <div className="flex items-start gap-4">
+            <div className="w-24 h-24 relative flex-shrink-0">
+              <Image
+                src={item.image}
+                alt={item.name}
+                fill
+                className="object-cover rounded-md"
+              />
+            </div>
+            <div className="flex-grow">
+              <h3 className="font-semibold">{item.name}</h3>
+              <p className="text-muted-foreground">${item.price.toFixed(2)}</p>
+              <div className="flex items-center mt-2">
+                <Button variant="outline" size="icon-sm" className="h-8 w-8">
+                  <MinusIcon className="h-4 w-4" />
+                </Button>
+                <Input
+                  type="number"
+                  value={item.quantity}
+                  className="w-14 h-8 text-center mx-2"
+                  readOnly
+                />
+                <Button variant="outline" size="icon-sm" className="h-8 w-8">
+                  <PlusIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold">
+                ${(item.price * item.quantity).toFixed(2)}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive mt-2"
+              >
+                <Trash2Icon className="h-4 w-4 mr-1" />
+                Remove
+              </Button>
             </div>
           </div>
-          <div className="ml-4">
-            <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-            <button className="text-red-500 text-sm mt-2">Remove</button>
-          </div>
+          {index < cartItems.length - 1 && <Separator className="my-4" />}
         </div>
       ))}
     </div>
