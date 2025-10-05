@@ -7,8 +7,12 @@ import Image from "next/image";
 
 export default async function Page() {
   try {
+    const cosmosBaseUrl = process.env.COSMOS_BASE_URL;
+    if (!cosmosBaseUrl) {
+      throw new Error("COSMOS_BASE_URL is not defined.");
+    }
     const client = createCosmosClient({
-      baseUrl: process.env.COSMOS_BASE_URL ?? "/cosmos",
+      baseUrl: cosmosBaseUrl,
       apiKey: process.env.COSMOS_API_KEY ?? null,
       fetchImpl: fetch,
     });
