@@ -17,8 +17,10 @@ function normalizePositiveInteger(
   return parsed;
 }
 
-export async function GET(req: Request, { params }: { params: { handle: string } }) {
-  const { handle } = params;
+export async function GET(req: Request, context: { params: Promise<{ handle: string }> }) {
+  const { params } = context;
+  const awaitedParams = await params;
+  const { handle } = awaitedParams;
   const url = new URL(req.url);
 
   const page = normalizePositiveInteger(url.searchParams.get("page"));
