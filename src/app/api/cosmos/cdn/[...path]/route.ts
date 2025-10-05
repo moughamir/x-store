@@ -1,12 +1,14 @@
 import { createCosmosClient } from "@/lib/api/cosmos/cosmos-client";
 import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { path?: string[] } }
+  request: NextRequest,
+  context: { params: Promise<{ path: string[] }> }
 ) {
-  const pathParts = params?.path ?? [];
+  const { params } = context;
+  const awaitedParams = await params;
+  const pathParts = awaitedParams?.path ?? [];
   if (pathParts.length === 0) {
     return NextResponse.json({ error: "path required" }, { status: 400 });
   }

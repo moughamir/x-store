@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return {
     title: `Order ${params.id} | X-Store`,
     description: `View details for order ${params.id}`,
@@ -36,7 +37,8 @@ async function getOrder(id: string) {
   return null;
 }
 
-export default async function OrderDetailsPage({ params }: { params: { id: string } }) {
+export default async function OrderDetailsPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const order = await getOrder(params.id);
 
   if (!order) {

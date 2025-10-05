@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import AddToCartButton from "@/components/blocks/cart/AddToCartButton";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   // This would typically fetch from an API
   const product = { id: params.id, name: `Product ${params.id}`, price: 19.99 };
 
@@ -12,7 +13,8 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   // This would typically fetch from an API
   const productId = parseInt(params.id);
 

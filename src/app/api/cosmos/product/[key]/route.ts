@@ -2,12 +2,10 @@ import { NextResponse } from "next/server";
 import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
 import { serverGetProduct } from "@/lib/api/cosmos/cosmos-server";
 
-interface Params {
-  params: { key: string };
-}
-
-export async function GET(req: Request, { params }: Params) {
-  const { key } = params;
+export async function GET(req: Request, context: { params: Promise<{ key: string }> }) {
+  const { params } = context;
+  const awaitedParams = await params;
+  const { key } = awaitedParams;
 
   try {
     const product = await serverGetProduct(key, { revalidate: 120 });
