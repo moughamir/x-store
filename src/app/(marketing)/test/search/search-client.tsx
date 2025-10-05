@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ProductCard } from "@/components/ProductCard";
-import { PaginationControl } from "@/components/PaginationControl";
+import { ProductCard } from "@/components/blocks/product/ProductCard";
+import { PaginationControl } from "@/components/blocks/layout/PaginationControl";
 import { useSearchParams, useRouter } from "next/navigation";
 import type { Product, ProductSearchResponse } from "@/types/api";
 

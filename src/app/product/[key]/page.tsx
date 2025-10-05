@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Image from "next/image";
+import type { Product, Variant } from "@/lib/api/cosmos/cosmos-types";
 export default function ProductPage({ params }: { params: { key: string } }) {
   const { key } = params;
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -15,10 +16,11 @@ export default function ProductPage({ params }: { params: { key: string } }) {
           `/api/cosmos/product/${encodeURIComponent(key)}`
         );
         if (!res.ok) throw new Error(`Failed: ${res.status}`);
-        const data = await res.json();
+        const data: Product = await res.json();
         setProduct(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        setError(message);
       }
     }
     load();
@@ -49,9 +51,9 @@ export default function ProductPage({ params }: { params: { key: string } }) {
         <TabsContent value="variants">
           {product.variants?.length > 0 ? (
             <ul className="list-disc pl-6 mt-4">
-              {product.variants.map((v: any) => (
-                <li key={v.id}>
-                  {v.title} – ${v.price}
+              {product.variants.map((variant: Variant) => (
+                <li key={variant.id}>
+                  {variant.title} – ${variant.price}
                 </li>
               ))}
             </ul>

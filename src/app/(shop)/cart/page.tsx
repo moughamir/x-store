@@ -1,9 +1,9 @@
-import CartItemList from '@/components/cart/CartItemList';
-import CartSummary from '@/components/cart/CartSummary';
+import CartItemList from "@/components/blocks/cart/CartItemList";
+import CartSummary from "@/components/blocks/cart/CartSummary";
 
 export const metadata = {
-  title: 'Shopping Cart | X-Store',
-  description: 'View your shopping cart',
+  title: "Shopping Cart | X-Store",
+  description: "View your shopping cart",
 };
 
 export default function CartPage() {

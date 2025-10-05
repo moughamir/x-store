@@ -1,10 +1,11 @@
 // src/app/(marketing)/test/page.tsx  (Server Component)
 import React from "react";
-import { createCosmosClient } from "@/lib/api/cosmos/cosmos-client";
-import { serverListProducts } from "@/lib/api/cosmos/cosmos-server";
+import {
+  createCosmosClient,
+  CosmosError,
+} from "@/lib/api/cosmos/cosmos-client";
+import type { Product } from "@/lib/api/cosmos/cosmos-types";
 import Image from "next/image";
-
-const data = await serverListProducts({ limit: 120, revalidate: 60 });
 
 export default async function Page() {
   try {
@@ -14,38 +15,57 @@ export default async function Page() {
       fetchImpl: fetch,
     });
 
-    const data = await client.listProducts({ limit: 120, page: 120 });
+    const { products = [] } = await client.listProducts({
+      limit: 120,
+      page: 120,
+    });
+
+    if (products.length === 0) {
+      return (
+        <main>
+          <p>No products found</p>
+        </main>
+      );
+    }
+
     return (
       <main>
-        {data.products?.length ? (
-          <ul>
-            {data.products.map((p) => (
-              <li key={p.id}>
-                HANDLE {p.handle} <br />
-                PRICE: [{p.price}] TITLE: {p.title} <br />
-                VARIANT - {p.variants.length}
+        <ul>
+          {products.map((product: Product) => {
+            const variantCount = product.variants?.length ?? 0;
+            const primaryImage =
+              product.images?.[0]?.src || "/images/products/placeholder.svg";
+
+            return (
+              <li key={product.id}>
+                HANDLE {product.handle} <br />
+                PRICE: [{product.price}] TITLE: {product.title} <br />
+                VARIANT - {variantCount}
                 IMAGE{" "}
                 <Image
-                  src={p.images[0]?.src || "/images/products/placeholder.svg"}
-                  alt={p.title}
+                  src={primaryImage}
+                  alt={product.title}
                   width={100}
                   height={100}
                 />
               </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No products found</p>
-        )}
+            );
+          })}
+        </ul>
       </main>
     );
-  } catch (err: any) {
-    console.error("Cosmos error:", err);
+  } catch (error: unknown) {
+    console.error("Cosmos error:", error);
+
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const payload = error instanceof CosmosError ? error.payload : undefined;
+    const serializedPayload = payload ? JSON.stringify(payload, null, 2) : null;
+
     return (
       <main>
         <h2>Error</h2>
-        <pre>{err instanceof Error ? err.message : String(err)}</pre>
-        <pre>{JSON.stringify(err.payload ?? err, null, 2)}</pre>
+        <pre>{message}</pre>
+        {serializedPayload ? <pre>{serializedPayload}</pre> : null}
       </main>
     );
   }

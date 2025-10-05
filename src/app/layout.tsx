@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { getRuntimeConfig, getPublicConfig } from "../utils/getEnvVars";
 import type { Viewport } from "next";
-import ShopFooter from "@/components/layout/ShopFooter";
-import ShopHeader from "@/components/layout/ShopHeader";
+import ShopFooter from "@/components/blocks/layout/ShopFooter";
+import ShopHeader from "@/components/blocks/layout/ShopHeader";
 
 
 const geistSans = Geist({

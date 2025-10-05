@@ -12,8 +12,8 @@ import { Format, ProductList, Product } from "./cosmos-types";
 /* ---------- Error class ---------- */
 export class CosmosError extends Error {
   status?: number;
-  payload?: any;
-  constructor(message: string, status?: number, payload?: any) {
+  payload?: unknown;
+  constructor(message: string, status?: number, payload?: unknown) {
     super(message);
     this.name = "CosmosError";
     this.status = status;
@@ -34,7 +34,7 @@ export class CosmosError extends Error {
 }
 
 /* ---------- Helpers ---------- */
-function safeStringify(v: any): string {
+function safeStringify(v: unknown): string {
   try {
     return JSON.stringify(v, null, 2);
   } catch {
@@ -46,7 +46,46 @@ function safeStringify(v: any): string {
   }
 }
 
-function buildQuery(params?: Record<string, any>): string {
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
+type RequestNextOptions = RequestInit["next"];
+
+interface ProductListParams {
+  page?: number;
+  limit?: number;
+  fields?: string;
+  format?: Format;
+  nextOptions?: RequestNextOptions;
+}
+
+interface SearchProductsParams {
+  q: string;
+  page?: number;
+  limit?: number;
+  fields?: string;
+  format?: Format;
+  nextOptions?: RequestNextOptions;
+}
+
+interface GetProductParams {
+  format?: Format;
+  nextOptions?: RequestNextOptions;
+}
+
+interface GetCollectionParams {
+  page?: number;
+  limit?: number;
+  fields?: string;
+  format?: Format;
+  nextOptions?: RequestNextOptions;
+}
+
+interface FetchCdnOptions {
+  signal?: AbortSignal | null;
+  nextOptions?: RequestNextOptions;
+}
+
+function buildQuery(params?: QueryParams): string {
   if (!params) return "";
   const q = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
@@ -116,16 +155,16 @@ export class CosmosClient {
     return headers;
   }
 
-  private async request<T = any>(
+  private async request<T>(
     path: string,
     opts?: {
       method?: "GET" | "POST" | "PUT" | "DELETE";
-      params?: Record<string, any>;
+      params?: QueryParams;
       requireApiKey?: boolean;
       format?: Format;
-      body?: any;
+      body?: unknown;
       signal?: AbortSignal | null;
-      nextOptions?: Record<string, any>;
+      nextOptions?: RequestInit["next"];
     }
   ): Promise<T> {
     const method = opts?.method ?? "GET";
@@ -147,11 +186,11 @@ export class CosmosClient {
         url,
         method,
         headers: masked,
-        nextOptions: (opts as any)?.nextOptions,
+        nextOptions: opts?.nextOptions,
       });
     }
 
-    const fetchInit: RequestInit & { next?: Record<string, any> } = {
+    const fetchInit: RequestInit & { next?: RequestInit["next"] } = {
       method,
       headers,
       body: opts?.body ? JSON.stringify(opts.body) : undefined,
@@ -165,7 +204,7 @@ export class CosmosClient {
 
     // read response
     let rawText: string | undefined;
-    let parsedBody: any;
+    let parsedBody: unknown;
     try {
       rawText = await res.text();
       if (rawText) {
@@ -209,13 +248,7 @@ export class CosmosClient {
 
   /* ---------- Endpoints ---------- */
 
-  async listProducts(params?: {
-    page?: number;
-    limit?: number;
-    fields?: string;
-    format?: Format;
-    nextOptions?: Record<string, any>;
-  }): Promise<ProductList> {
+  async listProducts(params?: ProductListParams): Promise<ProductList> {
     return this.request<ProductList>("/products", {
       method: "GET",
       params: {
@@ -229,14 +262,16 @@ export class CosmosClient {
     });
   }
 
-  async searchProducts(params: {
+  type SearchProductsParams = {
     q: string;
     page?: number;
     limit?: number;
     fields?: string;
     format?: Format;
-    nextOptions?: Record<string, any>;
-  }): Promise<ProductList> {
+    nextOptions?: RequestNextOptions;
+  };
+
+  async searchProducts(params: SearchProductsParams): Promise<ProductList> {
     return this.request<ProductList>("/products/search", {
       method: "GET",
       params: {
@@ -251,9 +286,14 @@ export class CosmosClient {
     });
   }
 
+  type GetProductParams = {
+    format?: Format;
+    nextOptions?: RequestNextOptions;
+  };
+
   async getProduct(
     key: string | number,
-    params?: { format?: Format; nextOptions?: Record<string, any> }
+    params?: GetProductParams
   ): Promise<Product> {
     return this.request<Product>(
       `/products/${encodeURIComponent(String(key))}`,
@@ -266,15 +306,17 @@ export class CosmosClient {
     );
   }
 
+  type GetCollectionParams = {
+    page?: number;
+    limit?: number;
+    fields?: string;
+    format?: Format;
+    nextOptions?: RequestNextOptions;
+  };
+
   async getCollection(
     handle: string,
-    params?: {
-      page?: number;
-      limit?: number;
-      fields?: string;
-      format?: Format;
-      nextOptions?: Record<string, any>;
-    }
+    params?: GetCollectionParams
   ): Promise<ProductList> {
     return this.request<ProductList>(
       `/collections/${encodeURIComponent(handle)}`,
@@ -292,15 +334,17 @@ export class CosmosClient {
     );
   }
 
-  async fetchCdn(
-    path: string,
-    opts?: { signal?: AbortSignal | null; nextOptions?: Record<string, any> }
-  ) {
+  type FetchCdnOptions = {
+    signal?: AbortSignal | null;
+    nextOptions?: RequestNextOptions;
+  };
+
+  async fetchCdn(path: string, opts?: FetchCdnOptions) {
     const encoded = encodeURI(path);
     const url = `${this.baseUrl}/cdn/${encoded}`;
     const headers: Record<string, string> = {};
     if (this.apiKey) headers["X-API-KEY"] = this.apiKey;
-    const fetchInit: RequestInit & { next?: Record<string, any> } = {
+    const fetchInit: RequestInit & { next?: RequestInit["next"] } = {
       method: "GET",
       headers,
       signal: opts?.signal ?? undefined,

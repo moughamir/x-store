@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductCard } from "@/components/blocks/product/ProductCard";
 import { Spinner } from "@/components/ui/spinner";
-import { PaginationControl } from "@/components/PaginationControl";
+import { PaginationControl } from "@/components/blocks/layout/PaginationControl";
 import { useSearchParams } from "next/navigation";
+import type { Product, ProductList } from "@/lib/api/cosmos/cosmos-types";
+
+interface CollectionResponse extends ProductList {
+  products: Product[];
+}
 
 export default function CollectionPage({
   params,
@@ -15,7 +20,7 @@ export default function CollectionPage({
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? "1");
 
-  const [collection, setCollection] = useState<any>(null);
+  const [collection, setCollection] = useState<CollectionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,10 +34,11 @@ export default function CollectionPage({
           )}?limit=12&page=${page}`
         );
         if (!res.ok) throw new Error(`Failed: ${res.status}`);
-        const data = await res.json();
+        const data: CollectionResponse = await res.json();
         setCollection(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -53,8 +59,8 @@ export default function CollectionPage({
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-        {collection?.products?.map((p: any) => (
-          <ProductCard key={p.id} product={p} />
+        {collection?.products?.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 

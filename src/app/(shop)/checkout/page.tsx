@@ -1,5 +1,5 @@
-import CheckoutForm from '@/components/checkout/CheckoutForm';
-import OrderSummary from '@/components/checkout/OrderSummary';
+import CheckoutForm from '@/components/blocks/checkout/CheckoutForm';
+import OrderSummary from '@/components/blocks/checkout/OrderSummary';
 
 export const metadata = {
   title: 'Checkout | X-Store',

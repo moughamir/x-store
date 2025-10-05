@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import AddToCartButton from '@/components/cart/AddToCartButton';
+import AddToCartButton from "@/components/blocks/cart/AddToCartButton";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   // This would typically fetch from an API

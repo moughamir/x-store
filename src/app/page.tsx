@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ProductGrid from "@/components/product/ProductGrid";
+import ProductGrid from "@/components/blocks/product/ProductGrid";
 
 export const metadata = {
   title: "X-Store | Online Shopping",

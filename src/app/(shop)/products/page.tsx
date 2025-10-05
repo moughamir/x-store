@@ -1,8 +1,8 @@
-import ProductGrid from '@/components/product/ProductGrid';
+import ProductGrid from "@/components/blocks/product/ProductGrid";
 
 export const metadata = {
-  title: 'Products | X-Store',
-  description: 'Browse all products at X-Store',
+  title: "Products | X-Store",
+  description: "Browse all products at X-Store",
 };
 
 export default async function ProductsPage() {
