@@ -8,6 +8,7 @@ import Image from "next/image";
 export default async function Page() {
   try {
     const cosmosBaseUrl = process.env.COSMOS_BASE_URL;
+    console.log("DEBUG: cosmosBaseUrl =", cosmosBaseUrl); // Added debug log
     if (!cosmosBaseUrl) {
       throw new Error("COSMOS_BASE_URL is not defined.");
     }
