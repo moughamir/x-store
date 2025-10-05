@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
 import { serverGetCollection } from "@/lib/api/cosmos/cosmos-server";
 
-interface Params {
-  params: { handle: string };
-}
 
 function normalizePositiveInteger(
   rawValue: string | null,
@@ -20,7 +17,7 @@ function normalizePositiveInteger(
   return parsed;
 }
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: Request, { params }: { params: { handle: string } }) {
   const { handle } = params;
   const url = new URL(req.url);
 
