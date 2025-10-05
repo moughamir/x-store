@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CosmosError } from "@/lib/api/cosmos/cosmos-client";
+import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
 import { serverGetCollection } from "@/lib/api/cosmos/cosmos-server";
 
 interface Params {

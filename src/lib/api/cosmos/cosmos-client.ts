@@ -7,101 +7,22 @@
  * - Msgpack supported (optional, requires @msgpack/msgpack).
  */
 
-import { Format, ProductList, Product } from "./cosmos-types";
-
-/* ---------- Error class ---------- */
-export class CosmosError extends Error {
-  status?: number;
-  payload?: unknown;
-  constructor(message: string, status?: number, payload?: unknown) {
-    super(message);
-    this.name = "CosmosError";
-    this.status = status;
-    this.payload = payload;
-    Object.setPrototypeOf(this, new.target.prototype);
-  }
-  toString() {
-    const payloadPart =
-      this.payload === undefined
-        ? ""
-        : typeof this.payload === "string"
-        ? ` payload=${this.payload}`
-        : ` payload=${safeStringify(this.payload)}`;
-    return `${this.name}: ${this.message}${
-      this.status ? ` (status=${this.status})` : ""
-    }${payloadPart}`;
-  }
-}
-
-/* ---------- Helpers ---------- */
-function safeStringify(v: unknown): string {
-  try {
-    return JSON.stringify(v, null, 2);
-  } catch {
-    try {
-      return String(v);
-    } catch {
-      return "<unserializable payload>";
-    }
-  }
-}
-
-type QueryParams = Record<string, string | number | boolean | null | undefined>;
-
-type RequestNextOptions = RequestInit["next"];
-
-interface ProductListParams {
-  page?: number;
-  limit?: number;
-  fields?: string;
-  format?: Format;
-  nextOptions?: RequestNextOptions;
-}
-
-interface SearchProductsParams {
-  q: string;
-  page?: number;
-  limit?: number;
-  fields?: string;
-  format?: Format;
-  nextOptions?: RequestNextOptions;
-}
-
-interface GetProductParams {
-  format?: Format;
-  nextOptions?: RequestNextOptions;
-}
-
-interface GetCollectionParams {
-  page?: number;
-  limit?: number;
-  fields?: string;
-  format?: Format;
-  nextOptions?: RequestNextOptions;
-}
-
-interface FetchCdnOptions {
-  signal?: AbortSignal | null;
-  nextOptions?: RequestNextOptions;
-}
-
-function buildQuery(params?: QueryParams): string {
-  if (!params) return "";
-  const q = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) {
-    if (v === undefined || v === null) continue;
-    q.set(k, String(v));
-  }
-  const s = q.toString();
-  return s ? `?${s}` : "";
-}
+import {
+  Format,
+  ProductList,
+  Product,
+  FetchCdnOptions,
+  GetCollectionParams,
+  GetProductParams,
+  ProductListParams,
+  QueryParams,
+  SearchProductsParams,
+  CosmosClientOptions,
+} from "./cosmos-types";
+import { CosmosError } from "./cosmos-error";
+import { buildQuery, safeStringify } from "./cosmos-utils";
 
 /* ---------- Client ---------- */
-export interface CosmosClientOptions {
-  baseUrl?: string; // default '/cosmos'
-  apiKey?: string | null;
-  fetchImpl?: typeof fetch; // pass Next's fetch in server components if desired
-}
 
 export class CosmosClient {
   baseUrl: string;
@@ -221,7 +142,11 @@ export class CosmosClient {
     if (!res.ok) {
       let msg: string;
       if (parsedBody && typeof parsedBody === "object") {
-        msg = parsedBody.message ?? safeStringify(parsedBody);
+        const bodyWithMessage = parsedBody as { message?: unknown };
+        msg =
+          typeof bodyWithMessage.message === "string"
+            ? bodyWithMessage.message
+            : safeStringify(parsedBody);
       } else if (parsedBody) {
         msg = String(parsedBody);
       } else {
@@ -262,15 +187,6 @@ export class CosmosClient {
     });
   }
 
-  type SearchProductsParams = {
-    q: string;
-    page?: number;
-    limit?: number;
-    fields?: string;
-    format?: Format;
-    nextOptions?: RequestNextOptions;
-  };
-
   async searchProducts(params: SearchProductsParams): Promise<ProductList> {
     return this.request<ProductList>("/products/search", {
       method: "GET",
@@ -286,11 +202,6 @@ export class CosmosClient {
     });
   }
 
-  type GetProductParams = {
-    format?: Format;
-    nextOptions?: RequestNextOptions;
-  };
-
   async getProduct(
     key: string | number,
     params?: GetProductParams
@@ -305,14 +216,6 @@ export class CosmosClient {
       }
     );
   }
-
-  type GetCollectionParams = {
-    page?: number;
-    limit?: number;
-    fields?: string;
-    format?: Format;
-    nextOptions?: RequestNextOptions;
-  };
 
   async getCollection(
     handle: string,
@@ -333,11 +236,6 @@ export class CosmosClient {
       }
     );
   }
-
-  type FetchCdnOptions = {
-    signal?: AbortSignal | null;
-    nextOptions?: RequestNextOptions;
-  };
 
   async fetchCdn(path: string, opts?: FetchCdnOptions) {
     const encoded = encodeURI(path);

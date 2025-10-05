@@ -1,9 +1,7 @@
 // src/app/(marketing)/test/page.tsx  (Server Component)
 import React from "react";
-import {
-  createCosmosClient,
-  CosmosError,
-} from "@/lib/api/cosmos/cosmos-client";
+import { createCosmosClient } from "@/lib/api/cosmos/cosmos-client";
+import { CosmosError } from "@/lib/api/cosmos/cosmos-error";
 import type { Product } from "@/lib/api/cosmos/cosmos-types";
 import Image from "next/image";
 
