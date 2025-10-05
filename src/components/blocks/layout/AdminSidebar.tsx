@@ -5,9 +5,7 @@ import { type Route } from "next";
 import { Button } from "@/components/ui/button";
 
 const adminLinks: { href: Route; label: string }[] = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/products", label: "Products" },
-  { href: "/dashboard/orders", label: "Orders" },
+  { href: "/", label: "Home" },
 ];
 
 export default function AdminSidebar() {
